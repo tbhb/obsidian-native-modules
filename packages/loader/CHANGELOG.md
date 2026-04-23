@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.1-beta.2](https://github.com/tbhb/obsidian-native-modules/compare/loader-0.1.0-beta.2...loader-0.1.1-beta.2) (2026-04-23)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @obsidian-native-modules/catalog bumped to 0.1.0-beta.3
+
 ## [0.1.0-beta.2](https://github.com/tbhb/obsidian-native-modules/compare/loader-0.1.0-beta.1...loader-0.1.0-beta.2) (2026-04-23)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-beta.3](https://github.com/tbhb/obsidian-native-modules/compare/catalog-0.1.0-beta.2...catalog-0.1.0-beta.3) (2026-04-23)
+
+
+### Documentation
+
+* **catalog:** add changelog and release-history links ([a3c3198](https://github.com/tbhb/obsidian-native-modules/commit/a3c3198f663ac3ee88cdb7616a54bc53debee05f))
+
 ## [0.1.0-beta.2](https://github.com/tbhb/obsidian-native-modules/compare/catalog-0.1.0-beta.1...catalog-0.1.0-beta.2) (2026-04-23)
 
 
