@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - beta
 
 permissions:
   contents: write
@@ -23,7 +22,7 @@ env:
 
 jobs:
   release-please:
-    name: release-please (${{ github.ref_name }})
+    name: release-please
     runs-on: ubuntu-latest
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
@@ -33,11 +32,8 @@ jobs:
         id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7  # v5.0.0
         with:
-          target-branch: ${{ github.ref_name }}
-          config-file: >-
-            ${{ github.ref_name == 'beta'
-            && '.github/release-please-config.beta.json'
-            || '.github/release-please-config.json' }}
+          target-branch: main
+          config-file: .github/release-please-config.json
           manifest-file: .github/release-please-manifest.json
 
   publish-release:
@@ -48,7 +44,7 @@ jobs:
     # Bind to the `npm` GitHub environment so the OIDC token carries an
     # `environment` claim. Each package's trusted-publisher config on npm
     # pins that claim plus the repo and workflow file. No NPM_TOKEN secret
-    # enters the flow. Both `main` and `beta` pushes share this environment.
+    # enters the flow.
     environment:
       name: npm
       url: https://www.npmjs.com/org/obsidian-native-modules
@@ -99,11 +95,14 @@ jobs:
       # For each package release-please cut, pack with pnpm (which rewrites
       # workspace:* to concrete versions) and then publish the tarball with
       # npm. This split is required: pnpm publish uses an outdated
-      # libnpmpublish and hits the 404 trap above, while npm publish doesn't
+      # libnpmpublish and hits the 404 trap, while npm publish doesn't
       # understand workspace:* substitution.
+      #
+      # The dist-tag comes from the version string: anything with a
+      # prerelease qualifier (e.g. 0.1.0-beta.2) publishes under the `beta`
+      # tag so `npm install` keeps resolving to the latest stable.
       - name: Publish released packages
         env:
-          IS_BETA: ${{ github.ref_name == 'beta' }}
           PATHS_RELEASED: ${{ needs.release-please.outputs.paths_released }}
         run: |
           set -euo pipefail
@@ -111,9 +110,10 @@ jobs:
             echo "::group::Publishing $pkg_dir"
             (
               cd "$pkg_dir"
+              version=$(jq -r '.version' package.json)
               pnpm pack --pack-destination .
               tarball=$(find . -maxdepth 1 -name '*.tgz' -print -quit)
-              if [ "$IS_BETA" = "true" ]; then
+              if [[ "$version" == *-* ]]; then
                 npm publish "$tarball" --provenance --access public --tag beta
               else
                 npm publish "$tarball" --provenance --access public

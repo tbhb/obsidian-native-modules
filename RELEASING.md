@@ -1,23 +1,31 @@
 # Releasing
 
-Releases run through [release-please][release-please] in monorepo mode. Each package has its own release line and its own GitHub release PR.
+Releases run through [release-please][release-please] in monorepo mode on a single branch (`main`). Each package has its own release line and its own tag. Both stable and beta releases ship from the same branch. The dist-tag and the GitHub-release prerelease flag come from the version string.
 
 [release-please]: https://github.com/googleapis/release-please-action
 
-## Channels
+## Single-branch prerelease flow
 
-- **Stable channel.** Push [conventional commits][conventional-commits] to `main`. release-please opens one release PR per affected package. Each PR bumps that package's `package.json` version and updates its `CHANGELOG.md`. Merging cuts a tag like `loader-v1.2.3` (component-prefixed) and a GitHub release. The publish job runs the monorepo build, attests the artifact via sigstore, and publishes to npm via trusted publishing under the `@obsidian-native-modules` org.
-- **Beta channel.** Push to the `beta` branch. Same flow driven by `.github/release-please-config.beta.json`. Produces `loader-v1.2.3-beta.1`-style tags marked as pre-releases and publishes to npm under the `beta` dist-tag so `npm install` keeps resolving to the latest stable.
+Push [conventional commits][conventional-commits] to `main`. release-please opens a grouped release PR bumping every affected package. Merging cuts one tag per package (like `loader-1.2.3`) and a GitHub release. The publish job builds, attests via sigstore, and publishes each released package to npm via trusted publishing under the `@obsidian-native-modules` org.
 
-Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. Scope the header (`feat(loader): ...`) to route the release to the right package. `chore:`, `docs:`, `refactor:`, `style:`, `test:`, `ci:`, and `build:` commits land without opening one.
+Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. `chore:`, `docs:`, `refactor:`, `style:`, `test:`, `ci:`, and `build:` commits land without opening one. release-please attributes commits to packages by path: any commit touching `packages/<name>/**` releases that package on the next cycle.
 
 [conventional-commits]: https://www.conventionalcommits.org/
 
+### Stable vs beta
+
+Version string alone determines the channel:
+
+- **Stable release.** Normal `feat` or `fix` bumps under `bump-minor-pre-major: true` and `bump-patch-for-minor-pre-major: true`. Published to npm under the default `latest` dist-tag. The GitHub release stays unmarked.
+- **Beta release.** Version carries a prerelease qualifier such as `0.1.0-beta.2`. Trigger via a `Release-As: 0.1.0-beta.2` footer on any qualifying commit that touches at least one `packages/<name>/**` path. release-please flags the GitHub release as `prerelease: true` automatically. The publish job detects the `-` in the version string and passes `--tag beta` to `npm publish`, so `npm install` keeps resolving to the highest stable version.
+
+BRAT honors GitHub's `prerelease` flag for beta-testers, which covers the user-visible staging channel without a separate branch.
+
 ## Trust model
 
-- **npm trusted publishing.** The `release` workflow runs under the `release` GitHub environment. The OIDC token carries an `environment: release` claim. Each package's trusted publisher configuration on npm pins that claim plus the repo and workflow file. No `NPM_TOKEN` secret enters the flow.
-- **sigstore provenance.** `pnpm publish --provenance` emits an npm provenance statement on each published version. Consumers verifying via `npm audit signatures` or sigstore's verify tooling can confirm the package came from this repo's `release` environment.
-- **Build attestation.** The workflow also emits a `actions/attest-build-provenance` statement attached to the GitHub release. Consumers of the prebuild assets (not the npm packages) verify against that attestation.
+- **npm trusted publishing.** The `release` workflow runs under the `npm` GitHub environment. The OIDC token carries an `environment: npm` claim. Each package's trusted-publisher configuration on npm pins that claim plus the repo and workflow filename. No `NPM_TOKEN` secret enters the flow.
+- **sigstore provenance.** `npm publish --provenance` emits an npm provenance statement on each published version. Consumers verifying via `npm audit signatures` or sigstore's verify tooling can confirm the package came from this repo's `npm` environment.
+- **Build attestation.** The workflow also emits an `actions/attest-build-provenance` statement covering every `packages/*/dist/index.js`. Consumers of the prebuild assets (not the npm packages) verify against that attestation.
 
 ## What not to hand-edit
 
@@ -42,11 +50,11 @@ Clean output means sigstore confirms the package provenance matches the expected
 Native-module release assets carry a separate sigstore attestation via `actions/attest-build-provenance`. Verify with `gh`:
 
 ```bash
-gh release download loader-v1.0.0 -R tbhb/obsidian-native-modules -p 'pty-darwin-arm64.node'
+gh release download loader-1.0.0 -R tbhb/obsidian-native-modules -p 'pty-darwin-arm64.node'
 gh attestation verify pty-darwin-arm64.node --repo tbhb/obsidian-native-modules
 ```
 
-Clean exit means sigstore confirms the asset matches the one the release workflow signed, with the OIDC identity tracing back to this repo's `release` environment on a GitHub-hosted runner.
+Clean exit means sigstore confirms the asset matches the one the release workflow signed, with the OIDC identity tracing back to this repo's `npm` environment on a GitHub-hosted runner.
 
 ## The prebuild matrix
 

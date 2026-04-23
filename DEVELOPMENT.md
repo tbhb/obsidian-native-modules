@@ -117,7 +117,7 @@ Header under 100 characters. Body and footer under 120 characters per line.
 
 ## Release process
 
-Release-please runs in monorepo mode, opening separate PRs per package. See [`RELEASING.md`](RELEASING.md) for the full guide.
+release-please runs in monorepo mode, opening separate PRs per package. See [`RELEASING.md`](RELEASING.md) for the full guide.
 
 ## Troubleshooting
 

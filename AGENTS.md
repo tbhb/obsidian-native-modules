@@ -48,7 +48,6 @@ packages/
 ├── workflows/ci.yml                     # Lint, Build, Test, Documentation jobs
 ├── workflows/release.yml                # release-please + build + publish to npm
 ├── release-please-config.json           # monorepo mode, per-package release lines
-├── release-please-config.beta.json      # same shape, beta channel
 ├── release-please-manifest.json         # per-package versions
 └── dependabot.yml
 ```
@@ -127,10 +126,11 @@ Add new technical terms to `cspell-words.txt` and `.vale/config/vocabularies/obs
 
 ## Release process
 
-Release-please in monorepo mode opens separate PRs per package. See [`RELEASING.md`](RELEASING.md) for the full guide: channels, asset layout, `tracked-electron-versions.json` lifecycle, npm trusted publishing, sigstore verification.
+release-please runs in monorepo mode on a single branch (`main`). See [`RELEASING.md`](RELEASING.md) for the full guide: the single-branch prerelease flow, trust model, sigstore verification, and the prebuild matrix.
 
-- Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. Scope determines which package gets bumped.
+- Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. File paths under `packages/<name>/**` determine which package gets bumped.
 - `chore:`, `docs:`, `refactor:`, `style:`, `test:`, `ci:`, and `build:` commits don't open release PRs.
+- To cut a beta release, add a `Release-As: x.y.z-beta.N` footer to a qualifying commit. The version string drives both the GitHub `prerelease: true` flag and the npm `--tag beta` dist-tag in the publish workflow.
 - Don't hand-edit `packages/*/package.json` `version`, `packages/*/CHANGELOG.md`, `.github/release-please-manifest.json`. Don't create tags manually.
 
 ## Rules at a glance
@@ -141,7 +141,7 @@ Release-please in monorepo mode opens separate PRs per package. See [`RELEASING.
 - Write reference-style markdown links with definitions at the bottom of the paragraph.
 - Avoid em-dashes, passive voice, and italicized copulas in prose.
 - Keep paragraphs on one line. No hard wrap.
-- Don't force-push to `main` or `beta`.
+- Don't force-push to `main`.
 - Don't bypass hooks.
 - Don't hand-edit release-managed files.
 
