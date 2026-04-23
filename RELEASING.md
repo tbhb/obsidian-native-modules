@@ -17,12 +17,13 @@ Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. `c
 Version string alone determines the channel:
 
 - **Stable release.** Normal `feat` or `fix` bumps under `bump-minor-pre-major: true` and `bump-patch-for-minor-pre-major: true`. Published to npm under the default `latest` dist-tag. The GitHub release stays unmarked.
-- **Beta release.** Version carries a prerelease qualifier such as `0.1.0-beta.2`. Trigger via a `Release-As: 0.1.0-beta.2` footer on any qualifying commit that touches at least one `packages/<name>/**` path. release-please flags the GitHub release as `prerelease: true` automatically. The publish job detects the `-` in the version string and passes `--tag beta` to `npm publish`, so `npm install` keeps resolving to the highest stable version.
+- **Beta release.** Version carries a prerelease qualifier such as `0.1.0-beta.2`. Trigger via a `Release-As: 0.1.0-beta.2` footer on any qualifying commit that touches at least one `packages/<name>/**` path. Each package config sets `"prerelease": true`, so release-please flags the GitHub release as `prerelease: true` whenever the version carries a prerelease qualifier. Stable versions stay unflagged. The publish job detects the `-` in the version string and passes `--tag beta` to `npm publish`, so `npm install` keeps resolving to the highest stable version.
 
 BRAT honors GitHub's `prerelease` flag for beta-testers, which covers the user-visible staging channel without a separate branch.
 
 ## Trust model
 
+- **Release-bot token.** The `release-please` job runs under a token minted from the `tbhb-releases` GitHub App. The workflow reads `RELEASE_BOT_APP_ID` as a repo variable and `RELEASE_BOT_PRIVATE_KEY` as a repo secret. An App-issued token bypasses GitHub's recursion-prevention rule so the release PR push triggers CI. It also bypasses the first-time-contributor workflow-approval gate.
 - **npm trusted publishing.** The `release` workflow runs under the `npm` GitHub environment. The OIDC token carries an `environment: npm` claim. Each package's trusted-publisher configuration on npm pins that claim plus the repo and workflow filename. No `NPM_TOKEN` secret enters the flow.
 - **sigstore provenance.** `npm publish --provenance` emits an npm provenance statement on each published version. Consumers verifying via `npm audit signatures` or sigstore's verify tooling can confirm the package came from this repo's `npm` environment.
 - **Build attestation.** The workflow also emits an `actions/attest-build-provenance` statement covering every `packages/*/dist/index.js`. Consumers of the prebuild assets (not the npm packages) verify against that attestation.
