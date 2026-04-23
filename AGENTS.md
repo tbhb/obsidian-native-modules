@@ -21,21 +21,6 @@ pnpm lint:all && pnpm typecheck && pnpm build && pnpm test
 
 The pre-commit hook runs `nano-staged`. The pre-push hook runs typecheck and tests. Never bypass with `--no-verify`.
 
-## Design source
-
-Authoritative design sketches live in the [`obsidian-plugin-sandbox`][sandbox] vault. Consult before adding surface area:
-
-- `obsidian-native-modules.md` covers the monorepo overview.
-- `obsidian-native-modules-catalog.md` covers shared types, the platform matrix, and asset naming.
-- `obsidian-native-modules-loader.md` covers the runtime resolver.
-- `obsidian-native-modules-builder.md` covers the build CLI.
-- `obsidian-native-modules-watcher.md` covers the Obsidian release watcher.
-- `obsidian-plugin-assets.md` covers the fetch + verify + cache layer the loader delegates to.
-
-Update the sketches if the design shifts in code.
-
-[sandbox]: https://github.com/tbhb/obsidian-plugin-sandbox
-
 ## Repository layout
 
 ```text
@@ -54,7 +39,7 @@ packages/
 
 Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `commitlint.config.js`.
 
-Future packages: `node-pty/`, `better-sqlite3/`. See design sketches.
+Future packages: `node-pty/`, `better-sqlite3/`, and other upstream-wrapper packages.
 
 ## Commands reference
 
@@ -136,7 +121,6 @@ release-please runs in monorepo mode on a single branch (`main`). See [`RELEASIN
 ## Rules at a glance
 
 - Run the full gate before pushing.
-- Consult the design sketches before adding public surface.
 - Add new technical terms to `cspell-words.txt` and the Vale vocabulary.
 - Write reference-style markdown links with definitions at the bottom of the paragraph.
 - Avoid em-dashes, passive voice, and italicized copulas in prose.

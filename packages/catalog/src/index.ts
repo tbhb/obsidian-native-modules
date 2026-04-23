@@ -7,9 +7,7 @@
  * helpers. Ships in plugin bundles (via loader) and in build-time
  * packages.
  *
- * The real implementation lands incrementally; see the design sketch
- * (`obsidian-native-modules-catalog.md` in the sandbox vault) for the
- * target API surface.
+ * The real implementation lands incrementally.
  */
 
 export const VERSION = '0.0.0';
