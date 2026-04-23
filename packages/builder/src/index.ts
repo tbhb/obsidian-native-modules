@@ -7,9 +7,7 @@
  * against the package's `PackageSpec`. Consumed by CI matrix jobs and
  * maintainers via a CLI.
  *
- * The real implementation lands incrementally; see the design sketch
- * (`obsidian-native-modules-builder.md` in the sandbox vault) for the
- * target API surface.
+ * The real implementation lands incrementally.
  */
 
 export const VERSION = '0.0.0';

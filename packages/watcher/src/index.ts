@@ -6,9 +6,7 @@
  * matrix. Runs on a daily schedule in CI and exposes a CLI for ad-hoc
  * maintainer checks.
  *
- * The real implementation lands incrementally; see the design sketch
- * (`obsidian-native-modules-watcher.md` in the sandbox vault) for the
- * target API surface.
+ * The real implementation lands incrementally.
  */
 
 export const VERSION = '0.0.0';

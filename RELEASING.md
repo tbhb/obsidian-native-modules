@@ -58,7 +58,4 @@ Clean exit means sigstore confirms the asset matches the one the release workflo
 
 ## The prebuild matrix
 
-Builder produces prebuild assets per `(package × platform × electron ABI)` tuple. See [`obsidian-native-modules-builder.md`][builder-sketch] in the sandbox vault for the matrix shape and the per-platform quirks. Watcher opens PRs to widen the matrix when new Electron ABIs appear in Obsidian releases. See [`obsidian-native-modules-watcher.md`][watcher-sketch] for that flow.
-
-[builder-sketch]: https://github.com/tbhb/obsidian-plugin-sandbox/blob/main/obsidian-native-modules-builder.md
-[watcher-sketch]: https://github.com/tbhb/obsidian-plugin-sandbox/blob/main/obsidian-native-modules-watcher.md
+Builder produces prebuild assets per `(package × platform × electron ABI)` tuple. Watcher opens PRs to widen the matrix when new Electron ABIs appear in Obsidian releases.
