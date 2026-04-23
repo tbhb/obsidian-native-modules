@@ -1,6 +1,6 @@
 {
-  "packages/catalog": "0.0.0",
-  "packages/loader": "0.0.0",
-  "packages/builder": "0.0.0",
-  "packages/watcher": "0.0.0"
+  "packages/catalog": "0.1.0-beta.1",
+  "packages/loader": "0.1.0-beta.1",
+  "packages/builder": "0.1.0-beta.1",
+  "packages/watcher": "0.1.0-beta.1"
 }
