@@ -1,6 +1,6 @@
 {
   "name": "@obsidian-native-modules/catalog",
-  "version": "0.0.0",
+  "version": "0.1.0-beta.1",
   "description": "Shared platform matrix, asset-naming, and type definitions for @obsidian-native-modules/*.",
   "keywords": [
     "obsidian",
