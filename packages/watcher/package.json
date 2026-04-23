@@ -1,0 +1,52 @@
+{
+  "name": "@obsidian-native-modules/watcher",
+  "version": "0.0.0",
+  "description": "Watches Obsidian release channels for new Electron ABIs and opens PRs that update the prebuild matrix.",
+  "keywords": [
+    "obsidian",
+    "electron",
+    "native-modules",
+    "release-watcher"
+  ],
+  "license": "MIT",
+  "author": "Tony Burns <tony@tonyburns.net>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tbhb/obsidian-native-modules.git",
+    "directory": "packages/watcher"
+  },
+  "bugs": {
+    "url": "https://github.com/tbhb/obsidian-native-modules/issues"
+  },
+  "homepage": "https://obsidian-native-modules.dev",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@obsidian-native-modules/catalog": "workspace:*"
+  }
+}

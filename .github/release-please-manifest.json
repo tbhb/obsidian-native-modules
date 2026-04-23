@@ -1,0 +1,6 @@
+{
+  "packages/catalog": "0.0.0",
+  "packages/loader": "0.0.0",
+  "packages/builder": "0.0.0",
+  "packages/watcher": "0.0.0"
+}
