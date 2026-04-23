@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0-beta.2](https://github.com/tbhb/obsidian-native-modules/compare/catalog-0.1.0-beta.1...catalog-0.1.0-beta.2) (2026-04-23)
+
+
+### Documentation
+
+* add package install sections and drop vault references ([#5](https://github.com/tbhb/obsidian-native-modules/issues/5)) ([02c2333](https://github.com/tbhb/obsidian-native-modules/commit/02c2333a312f7e2d10e865ca62bf0d9c580bfdb4))
+
 ## 0.1.0-beta.1 (2026-04-23)
 
 
