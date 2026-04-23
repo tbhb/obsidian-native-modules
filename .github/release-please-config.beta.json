@@ -12,22 +12,26 @@
     "packages/catalog": {
       "package-name": "@obsidian-native-modules/catalog",
       "component": "catalog",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "release-as": "0.1.0-beta.1"
     },
     "packages/loader": {
       "package-name": "@obsidian-native-modules/loader",
       "component": "loader",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "release-as": "0.1.0-beta.1"
     },
     "packages/builder": {
       "package-name": "@obsidian-native-modules/builder",
       "component": "builder",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "release-as": "0.1.0-beta.1"
     },
     "packages/watcher": {
       "package-name": "@obsidian-native-modules/watcher",
       "component": "watcher",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "release-as": "0.1.0-beta.1"
     }
   },
   "plugins": ["node-workspace"]
