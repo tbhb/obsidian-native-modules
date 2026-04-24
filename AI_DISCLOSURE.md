@@ -1,4 +1,4 @@
-# Artificial Intelligence Disclosure (AID) statement
+# Artificial intelligence disclosure (AID) statement
 
 <!-- vale off -->
 

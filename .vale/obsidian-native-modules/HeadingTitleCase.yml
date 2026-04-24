@@ -106,3 +106,9 @@ exceptions:
   - Twilio
   - Okta
   - Auth0
+  - AID
+  - obsidian-native-modules
+  - "@obsidian-native-modules/builder"
+  - "@obsidian-native-modules/catalog"
+  - "@obsidian-native-modules/loader"
+  - "@obsidian-native-modules/watcher"

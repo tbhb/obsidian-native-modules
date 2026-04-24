@@ -31,6 +31,12 @@ const typeAwareRules = {
   '@typescript-eslint/no-explicit-any': 'off',
 } as const;
 
+const allowDefaultProjectFiles = [
+  'eslint.config.mts',
+  'packages/*/vite.config.ts',
+  'packages/*/vitest.config.ts',
+];
+
 export default tseslint.config(
   {
     files: ['packages/*/src/**/*.ts'],
@@ -41,7 +47,7 @@ export default tseslint.config(
       },
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['eslint.config.mts'],
+          allowDefaultProject: allowDefaultProjectFiles,
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -64,6 +70,34 @@ export default tseslint.config(
       },
       parserOptions: {
         projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+      sonarjs,
+    },
+    rules: {
+      'sonarjs/cognitive-complexity': ['error', 15],
+      ...typeAwareRules,
+    },
+  },
+  // Per-package vite and vitest configs. These aren't part of any package
+  // tsconfig's `include`, so they fall through `allowDefaultProject` above.
+  // They run in Node, not the browser, and have no reason to use `obsidianmd`
+  // rules. `commitlint.config.js` stays under Biome's coverage until a later
+  // commit migrates it to `.commitlintrc.ts` under the root tsconfig include.
+  {
+    files: ['packages/*/vite.config.ts', 'packages/*/vitest.config.ts'],
+    languageOptions: {
+      parser: tseslint.parser,
+      globals: {
+        ...globals.node,
+      },
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: allowDefaultProjectFiles,
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -106,6 +140,15 @@ export default tseslint.config(
     files: ['examples/*/src/**/*.ts', 'test/fixtures/*/src/**/*.ts'],
     plugins: { obsidianmd },
     rules: { ...obsidianmd.configs.recommended },
+  },
+  // `hardcoded-config-path` substring-matches `.obsidian` and fires on docs
+  // URLs (`docs.obsidian.md/...`). That's a false positive in tests that
+  // assert against those URLs; the rule stays active on `src/` paths.
+  {
+    files: ['packages/*/test/**/*.ts'],
+    rules: {
+      'obsidianmd/hardcoded-config-path': 'off',
+    },
   },
   globalIgnores([
     'node_modules',
