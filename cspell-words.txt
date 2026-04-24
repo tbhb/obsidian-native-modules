@@ -17,6 +17,8 @@ jscpd
 jsdom
 knip
 libnpmpublish
+mkdtemp
+mkdtempSync
 nanostaged
 numstat
 obsidianmd
@@ -35,6 +37,7 @@ sigstore
 sonarjs
 SLSA
 tbhb
+tmpdir
 topo
 tsbuildinfo
 vite

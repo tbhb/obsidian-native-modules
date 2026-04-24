@@ -15,6 +15,18 @@
       "dependsOn": ["^build"],
       "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
     },
+    "test:unit": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
+    },
+    "test:integration": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
+    },
+    "test:property": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
+    },
     "test:coverage": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"],

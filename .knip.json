@@ -11,7 +11,12 @@
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/loader": {
-      "entry": ["src/index.ts", "test/**/*.test.ts"],
+      "entry": [
+        "src/index.ts",
+        "test/**/*.test.ts",
+        "test/__mocks__/obsidian.ts",
+        "test/fixtures/plugin/src/main.ts"
+      ],
       "project": ["src/**/*.ts", "test/**/*.ts"]
     },
     "packages/builder": {
