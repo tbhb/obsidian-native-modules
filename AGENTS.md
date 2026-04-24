@@ -67,6 +67,7 @@ Filter to a specific package: `pnpm --filter @obsidian-native-modules/loader run
 
 - Two-space indentation everywhere, enforced by Biome. Single quotes, semicolons, trailing commas, 100-char line width. See `biome.json`.
 - ESLint runs `typescript-eslint`'s type-aware rules over `packages/*/src/**/*.ts` for checks Biome doesn't cover.
+- `eslint-plugin-sonarjs` contributes `sonarjs/cognitive-complexity` at the default threshold of 15. Prefer extracting helper functions over raising the threshold.
 - Strict TypeScript with ES2022 target, `noUncheckedIndexedAccess`, and `isolatedModules`. Base options in `tsconfig.base.json`; each package extends it with `composite: true` and its own `rootDir` / `outDir`.
 - Avoid default exports.
 
