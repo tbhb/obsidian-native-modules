@@ -16,6 +16,8 @@ commitlint
 commitlintrc
 Corepack
 cspell
+[Dd]anger
+[Dd]angerfile
 dep
 dependabot
 deps
@@ -27,6 +29,7 @@ ESLint
 etag
 formatters
 gitignore[dr]?
+[Gg]lobals
 gzip
 gzipped
 [Hh]usky

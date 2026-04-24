@@ -7,6 +7,7 @@ commitlint
 commitlintrc
 cooldown
 Cowork
+dangerfile
 depcruise
 dependabot
 endgroup
@@ -17,6 +18,7 @@ jsdom
 knip
 libnpmpublish
 nanostaged
+numstat
 obsidianmd
 OIDC
 parenthetical
