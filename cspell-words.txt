@@ -16,6 +16,7 @@ jsdom
 knip
 libnpmpublish
 nanostaged
+obsidianmd
 OIDC
 parenthetical
 parentheticals

@@ -9,30 +9,16 @@
     },
     "typecheck": {
       "dependsOn": ["^build"],
-      "inputs": ["src/**", "test/**", "tsconfig.json", "tsconfig.test.json", "package.json"]
+      "inputs": ["src/**", "test/**", "tsconfig.json", "package.json"]
     },
     "test": {
       "dependsOn": ["^build"],
-      "inputs": [
-        "src/**",
-        "test/**",
-        "tsconfig.json",
-        "tsconfig.test.json",
-        "vitest.config.ts",
-        "package.json"
-      ]
+      "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
     },
     "test:coverage": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"],
-      "inputs": [
-        "src/**",
-        "test/**",
-        "tsconfig.json",
-        "tsconfig.test.json",
-        "vitest.config.ts",
-        "package.json"
-      ]
+      "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
     },
     "lint": {
       "inputs": ["src/**", "test/**", "biome.json", "eslint.config.mts", "package.json"]

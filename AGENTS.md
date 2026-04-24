@@ -70,12 +70,12 @@ Filter to a specific package: `pnpm --filter @obsidian-native-modules/loader run
 ## Code style
 
 - Two-space indentation everywhere, enforced by Biome. Single quotes, semicolons, trailing commas, 100-char line width. See `biome.json`.
-- ESLint runs `typescript-eslint`'s type-aware rules over `packages/*/src/**/*.ts` for checks Biome doesn't cover.
+- ESLint runs on `packages/*/src/**/*.ts` and `packages/*/test/**/*.ts`, with type-aware rules applied to both.
 - `eslint-plugin-sonarjs` contributes `sonarjs/cognitive-complexity` at the default threshold of 15. Prefer extracting helper functions over raising the threshold.
 - [dependency-cruiser][depcruise] guards each package's module graph via `.dependency-cruiser.cjs`. It forbids runtime circular dependencies, orphan modules, unresolvable imports, dev-dependency imports from any `packages/*/src/`, duplicate dependency-type declarations, and `packages/*/src/` depending on `packages/*/test/`. Cycles composed only of `import type` edges pass, since those edges vanish after tsc emits. The rule exempts `obsidian` from the dev-dep check so plugin sources under forthcoming `examples/` or `test/fixtures/` directories can import it once they land.
 - [Knip][knip] catches unused files, exports, and dependencies via `.knip.json`. It runs workspace-aware with one entry per package, so per-package project globs and ignore lists stay edit-in-place as packages diverge. External binaries called from npm scripts sit in `ignoreBinaries` so knip skips them; the list covers `actionlint`, `rumdl`, `vale`, and `yamllint`.
 - [jscpd][jscpd] detects copy-paste duplication across every package's `src/` and `test/` via `.jscpd.json`. The config sets `threshold: 0` so any clone fails the lint, honors `.gitignore`, and uses the default `mode: mild` with `minTokens: 50` and `minLines: 5`. Prefer extracting a shared helper into `@obsidian-native-modules/catalog` or an in-package helpers directory over silencing a clone. The on-demand `html` reporter writes to `./report/`, which `.gitignore` excludes.
-- Strict TypeScript with ES2022 target, `noUncheckedIndexedAccess`, and `isolatedModules`. Base options in `tsconfig.base.json`; each package extends it with `composite: true` and its own `rootDir` / `outDir`.
+- Strict TypeScript with ES2022 target and the full suite of strict flags: `noUncheckedIndexedAccess`, `noImplicitOverride`, `noPropertyAccessFromIndexSignature`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`, plus `allowUnreachableCode: false` and `allowUnusedLabels: false`. Base options in `tsconfig.base.json`; each package's `tsconfig.json` extends it and includes both `src/**/*.ts` and `test/**/*.ts` in one pass.
 - Avoid default exports.
 
 [depcruise]: https://github.com/sverweij/dependency-cruiser
