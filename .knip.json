@@ -1,0 +1,27 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreBinaries": ["actionlint", "rumdl", "vale", "yamllint"],
+  "workspaces": {
+    ".": {
+      "project": ["**/*.{ts,mts,cts,js,mjs,cjs}"],
+      "ignore": ["packages/**", "node_modules/**", "**/dist/**", "**/coverage/**"]
+    },
+    "packages/catalog": {
+      "entry": ["src/index.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/loader": {
+      "entry": ["src/index.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/builder": {
+      "entry": ["src/index.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    },
+    "packages/watcher": {
+      "entry": ["src/index.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    }
+  },
+  "ignoreDependencies": []
+}

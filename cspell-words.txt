@@ -12,6 +12,7 @@ endgroup
 gitignored
 husky
 jsdom
+knip
 libnpmpublish
 nanostaged
 OIDC
