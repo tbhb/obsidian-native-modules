@@ -32,6 +32,19 @@
       "outputs": ["coverage/**"],
       "inputs": ["src/**", "test/**", "tsconfig.json", "vitest.config.ts", "package.json"]
     },
+    "test:mutation": {
+      "dependsOn": ["^build"],
+      "outputs": ["reports/**"],
+      "inputs": [
+        "src/**",
+        "test/**",
+        "tsconfig.json",
+        "vitest.config.ts",
+        "vitest.stryker.config.ts",
+        "stryker.config.json",
+        "package.json"
+      ]
+    },
     "lint": {
       "inputs": ["src/**", "test/**", "biome.json", "eslint.config.mts", "package.json"]
     },

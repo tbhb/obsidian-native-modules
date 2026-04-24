@@ -81,6 +81,7 @@ setText
 shellcheck
 sigstore
 SLSA
+Stryker
 subcommand
 structuredClone
 subtree

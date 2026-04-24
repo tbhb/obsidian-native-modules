@@ -6,6 +6,7 @@
     "dangerfile.lite.ts",
     "dangerfile.ts",
     "packages/*/vite.config.ts",
-    "packages/*/vitest.config.ts"
+    "packages/*/vitest.config.ts",
+    "packages/*/vitest.stryker.config.ts"
   ]
 }

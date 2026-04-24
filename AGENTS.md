@@ -31,13 +31,16 @@ packages/
 └── watcher/                # @obsidian-native-modules/watcher    (build-time CLI)
 .github/
 ├── workflows/ci.yml                     # Lint, Build, Test, Documentation jobs
+├── workflows/mutation.yml               # Stryker mutation tests with incremental cache
 ├── workflows/release.yml                # release-please + build + publish to npm
 ├── release-please-config.json           # monorepo mode, per-package release lines
 ├── release-please-manifest.json         # per-package versions
 └── dependabot.yml
+scripts/
+└── stryker-changed.mjs                  # diff-scoped mutation dispatcher across packages
 ```
 
-Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `.dependency-cruiser.cjs`, `.jscpd.json`, `.knip.json`, `.cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `.commitlintrc.ts`.
+Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `.dependency-cruiser.cjs`, `.jscpd.json`, `.knip.json`, `.cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `.commitlintrc.ts`. Per-package mutation config lives alongside each package's Vitest config: `packages/*/stryker.config.json` and `packages/*/vitest.stryker.config.ts`.
 
 Future packages: `node-pty/`, `better-sqlite3/`, and other upstream-wrapper packages.
 
@@ -51,6 +54,8 @@ pnpm test:unit        # turbo run test:unit (deterministic unit tier per package
 pnpm test:integration # turbo run test:integration (fixture-driven integration tier per package)
 pnpm test:property    # turbo run test:property (fast-check property tier per package)
 pnpm test:coverage    # turbo run test:coverage (unit project only, 100% gate)
+pnpm test:mutation    # turbo run test:mutation (Stryker per package, 100% break)
+pnpm test:mutation:changed # Stryker per package scoped to diff vs STRYKER_BASE (default origin/main)
 pnpm typecheck        # turbo run typecheck
 pnpm format           # biome format --write
 pnpm format:markdown  # rumdl fmt .
@@ -102,6 +107,21 @@ Every runtime dependency stays external so consuming bundlers can tree-shake.
 
 [fast-check]: https://fast-check.dev/
 [fast-check-vitest]: https://github.com/dubzzz/fast-check/tree/main/packages/vitest
+
+## Mutation testing
+
+[Stryker 9][stryker] gates every package's `src/` at 100% mutation score. Coverage proves a line ran. Mutation testing proves a test would fail if that line changed. Treat survivors the way you'd treat coverage gaps. Fix the tests, or restructure the source so the survivor moves into a pure function whose output a test can pin by equality.
+
+- Each package owns its own `stryker.config.json` and `vitest.stryker.config.ts`. The Stryker Vitest runner reads the package's `vitest.stryker.config.ts`, which narrows execution to the unit project. Integration fixtures and property iterations stay out of mutation runs. The loader config preserves the jsdom environment, the obsidian alias, and the unit setup file.
+- Scope: `mutate: src/**/*.ts` per package, no carve-outs.
+- The break threshold sits at 100 for every package. Don't lower it without a concrete reason and a follow-up task to restore it.
+- Module-level `export const` and re-export bindings can survive a static-import `expect(X).toBe(...)` assertion when the Vitest worker caches the module before Stryker sets the active mutant. Test them through a runtime path that re-reads the binding, a method call that returns the value, or a constructor that reads an option. Or force re-evaluation with `vi.resetModules()` plus `await import(...)`.
+- Stryker directive comments suppress mutant classes that don't belong under mutation testing. Write `// Stryker disable <MutatorName>` on the line before the source to suppress, and `// Stryker restore <MutatorName>` on the line before the source that resumes instrumentation. Scope them as narrowly as possible.
+- `pnpm test:mutation` fans out across every package via Turbo. Each package writes `reports/stryker-incremental.json` so repeated runs reuse prior results and later invocations finish in seconds.
+- `pnpm test:mutation:changed` runs the root dispatcher in `scripts/stryker-changed.mjs`. It groups `packages/*/src/*.ts` changes against `origin/main` by package and invokes each affected package's Stryker with `--mutate` scoped to that package's changed files. Override the base with `STRYKER_BASE=origin/beta pnpm test:mutation:changed`. Use this during feature work for fast feedback on the files you just edited.
+- Pre-push doesn't run mutation testing. The `mutation.yml` CI workflow enforces the break threshold on every pull request and every `main` push. It caches each package's incremental report per ref with a fallback to `main`.
+
+[stryker]: https://stryker-mutator.io/
 
 ## Documentation linting
 
