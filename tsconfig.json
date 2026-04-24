@@ -1,4 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": []
+  "include": [
+    "eslint.config.mts",
+    ".commitlintrc.ts",
+    "packages/*/vite.config.ts",
+    "packages/*/vitest.config.ts"
+  ]
 }

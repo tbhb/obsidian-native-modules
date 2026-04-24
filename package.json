@@ -25,7 +25,7 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
-    "typecheck": "turbo run typecheck",
+    "typecheck": "turbo run typecheck && tsc --noEmit",
     "check": "biome check . && eslint .",
     "check:fix": "biome check --write . && eslint --fix .",
     "depcruise:graph": "depcruise packages/*/src packages/*/test --include-only '^packages/' --output-type mermaid --output-to dependency-graph.mmd",

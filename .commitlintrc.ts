@@ -1,11 +1,13 @@
-/** @type {import("@commitlint/types").UserConfig} */
-export default {
+import type { UserConfig } from '@commitlint/types';
+
+const config: UserConfig = {
   extends: ['@commitlint/config-conventional'],
   rules: {
+    // Subject line no longer than 100 chars. Body and footer up to 120.
     'header-max-length': [2, 'always', 100],
     'body-max-line-length': [2, 'always', 120],
     'footer-max-line-length': [2, 'always', 120],
-    // config-conventional sets these at warning; escalate so the pre-push
+    // config-conventional sets these at warning. Escalate so the pre-push
     // and commit-msg hooks actually block malformed commits.
     'body-leading-blank': [2, 'always'],
     'footer-leading-blank': [2, 'always'],
@@ -18,10 +20,10 @@ export default {
     //
     //   - `builder`, `catalog`, `loader`, `watcher`
     //                         package scopes. Add wrapper packages
-    //                         (`node-pty`, `better-sqlite3`, ...) when they
-    //                         land.
+    //                         (`node-pty`, `better-sqlite3`, and others)
+    //                         when they land.
     //   - `ci`                automated pipeline edits and manual CI tweaks
-    //   - `deps`              dependabot npm / github-actions updates
+    //   - `deps`              dependabot npm and github-actions updates
     //   - `deps-dev`          dependabot devDependency bumps
     //   - `dev-dependencies`  dependabot grouped bumps (group name in
     //                         `.github/dependabot.yml`)
@@ -45,3 +47,5 @@ export default {
     ],
   },
 };
+
+export default config;

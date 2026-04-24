@@ -13,11 +13,14 @@ CLI
 CLIs
 [Cc]onfigs?
 commitlint
+commitlintrc
 Corepack
 cspell
 dep
+dependabot
 deps
 dev
+devDependency
 devDependencies
 distro
 ESLint

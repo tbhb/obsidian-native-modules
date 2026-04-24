@@ -16,7 +16,7 @@ pnpm build            # tsc -b per package via turbo, emits each package's dist/
 Run the full gate before pushing:
 
 ```bash
-pnpm lint:all && pnpm typecheck && pnpm build && pnpm test
+pnpm lint:all && pnpm typecheck && pnpm build && pnpm test:coverage
 ```
 
 The pre-commit hook runs `nano-staged`. The pre-push hook runs the full gate: `lint:all`, `typecheck`, `build`, and `test:coverage`. Never bypass with `--no-verify`.
@@ -37,7 +37,7 @@ packages/
 └── dependabot.yml
 ```
 
-Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `.dependency-cruiser.cjs`, `.jscpd.json`, `.knip.json`, `cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `commitlint.config.js`.
+Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `.dependency-cruiser.cjs`, `.jscpd.json`, `.knip.json`, `cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `.commitlintrc.ts`.
 
 Future packages: `node-pty/`, `better-sqlite3/`, and other upstream-wrapper packages.
 

@@ -7,11 +7,19 @@
 // already covers (no-floating-promises, no-misused-promises, no-explicit-any,
 // no-non-null-assertion, no-ts-ignore). See `biome.json`.
 
-import { globalIgnores } from 'eslint/config';
+import type { Linter } from 'eslint';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import obsidianmd from 'eslint-plugin-obsidianmd';
 import sonarjs from 'eslint-plugin-sonarjs';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+// `obsidianmd.configs.recommended` is a hybrid: its own properties are the
+// rules map, while `Symbol.iterator` yields a multi-entry flat config that
+// also pulls in `tseslint.configs.recommendedTypeChecked`, sdl, import, and
+// depend. Configure tseslint ourselves and narrow to the rules map before
+// spreading.
+const obsidianRecommendedRules = (obsidianmd.configs?.['recommended'] ?? {}) as Linter.RulesRecord;
 
 const typeAwareRules = {
   '@typescript-eslint/no-unsafe-assignment': 'error',
@@ -31,13 +39,7 @@ const typeAwareRules = {
   '@typescript-eslint/no-explicit-any': 'off',
 } as const;
 
-const allowDefaultProjectFiles = [
-  'eslint.config.mts',
-  'packages/*/vite.config.ts',
-  'packages/*/vitest.config.ts',
-];
-
-export default tseslint.config(
+export default defineConfig(
   {
     files: ['packages/*/src/**/*.ts'],
     languageOptions: {
@@ -47,7 +49,7 @@ export default tseslint.config(
       },
       parserOptions: {
         projectService: {
-          allowDefaultProject: allowDefaultProjectFiles,
+          allowDefaultProject: ['manifest.json'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -82,13 +84,10 @@ export default tseslint.config(
       ...typeAwareRules,
     },
   },
-  // Per-package vite and vitest configs. These aren't part of any package
-  // tsconfig's `include`, so they fall through `allowDefaultProject` above.
-  // They run in Node, not the browser, and have no reason to use `obsidianmd`
-  // rules. `commitlint.config.js` stays under Biome's coverage until a later
-  // commit migrates it to `.commitlintrc.ts` under the root tsconfig include.
+  // Root-level config files run in Node, not the browser, and have no reason
+  // to use `obsidianmd` rules. All four sit in the root tsconfig's `include`.
   {
-    files: ['packages/*/vite.config.ts', 'packages/*/vitest.config.ts'],
+    files: ['.commitlintrc.ts', 'packages/*/vite.config.ts', 'packages/*/vitest.config.ts'],
     languageOptions: {
       parser: tseslint.parser,
       globals: {
@@ -96,7 +95,7 @@ export default tseslint.config(
       },
       parserOptions: {
         projectService: {
-          allowDefaultProject: allowDefaultProjectFiles,
+          allowDefaultProject: ['manifest.json'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -139,7 +138,7 @@ export default tseslint.config(
   {
     files: ['examples/*/src/**/*.ts', 'test/fixtures/*/src/**/*.ts'],
     plugins: { obsidianmd },
-    rules: { ...obsidianmd.configs.recommended },
+    rules: { ...obsidianRecommendedRules },
   },
   // `hardcoded-config-path` substring-matches `.obsidian` and fires on docs
   // URLs (`docs.obsidian.md/...`). That's a false positive in tests that
@@ -150,13 +149,5 @@ export default tseslint.config(
       'obsidianmd/hardcoded-config-path': 'off',
     },
   },
-  globalIgnores([
-    'node_modules',
-    '**/dist',
-    '**/coverage',
-    '**/*.config.ts',
-    'commitlint.config.js',
-    '.husky',
-    '.turbo',
-  ]),
+  globalIgnores(['node_modules', '**/dist', '**/coverage', '.husky', '.turbo']),
 );
