@@ -76,7 +76,7 @@ Turbo caches outputs locally at `.turbo/`. Cache invalidates when `src/`, `tscon
 | ESLint | Type-aware rules Biome doesn't cover, like `no-floating-promises` | `eslint.config.mts` |
 | rumdl | Markdown structure | `.rumdl.toml` |
 | vale | Prose style and sentence case | `.vale.ini` + `.vale/` |
-| cspell | Spelling across all text files | `cspell.json` + `cspell-words.txt` |
+| cspell | Spelling across all text files | `.cspell.json` + `cspell-words.txt` |
 | yamllint | YAML structure and line length | `.yamllint.yaml` + `.yamllintignore` |
 | actionlint | GitHub Actions workflow correctness | runs on `.github/workflows/*.yml` |
 
