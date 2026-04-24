@@ -51,5 +51,8 @@
   },
   "dependencies": {
     "@obsidian-native-modules/catalog": "workspace:*"
+  },
+  "devDependencies": {
+    "eslint-plugin-obsidianmd": "^0.1.9"
   }
 }

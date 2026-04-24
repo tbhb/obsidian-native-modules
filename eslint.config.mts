@@ -1,25 +1,23 @@
 // ESLint runs on every package's src and test trees, with type-aware rules
 // applied to both. `eslint-plugin-sonarjs` contributes
-// `sonarjs/cognitive-complexity`. Obsidian submission rules
-// (`eslint-plugin-obsidianmd`) apply only to forthcoming plugin directories.
+// `sonarjs/cognitive-complexity`.
+//
+// Obsidian community-plugin submission rules live with the package that
+// hosts the lint targets: `eslint-plugin-obsidianmd` is a devDep of
+// `@obsidian-native-modules/loader` (where integration-test plugin and
+// vault fixtures will land). When those fixtures or standalone example
+// plugins appear, each such package grows its own `eslint.config.mts`
+// that extends this root config and registers obsidianmd scoped to its
+// own plugin directories.
 //
 // Biome owns general-purpose lint + formatting + the type-aware rules it
 // already covers (no-floating-promises, no-misused-promises, no-explicit-any,
 // no-non-null-assertion, no-ts-ignore). See `biome.json`.
 
-import type { Linter } from 'eslint';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import obsidianmd from 'eslint-plugin-obsidianmd';
 import sonarjs from 'eslint-plugin-sonarjs';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-
-// `obsidianmd.configs.recommended` is a hybrid: its own properties are the
-// rules map, while `Symbol.iterator` yields a multi-entry flat config that
-// also pulls in `tseslint.configs.recommendedTypeChecked`, sdl, import, and
-// depend. Configure tseslint ourselves and narrow to the rules map before
-// spreading.
-const obsidianRecommendedRules = (obsidianmd.configs?.['recommended'] ?? {}) as Linter.RulesRecord;
 
 const typeAwareRules = {
   '@typescript-eslint/no-unsafe-assignment': 'error',
@@ -48,9 +46,7 @@ export default defineConfig(
         ...globals.node,
       },
       parserOptions: {
-        projectService: {
-          allowDefaultProject: ['manifest.json'],
-        },
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -84,8 +80,8 @@ export default defineConfig(
       ...typeAwareRules,
     },
   },
-  // Root-level config files run in Node, not the browser, and have no reason
-  // to use `obsidianmd` rules. All four sit in the root tsconfig's `include`.
+  // Root-level config files run in Node, not the browser. All four sit in
+  // the root tsconfig's `include`.
   {
     files: ['.commitlintrc.ts', 'packages/*/vite.config.ts', 'packages/*/vitest.config.ts'],
     languageOptions: {
@@ -94,9 +90,7 @@ export default defineConfig(
         ...globals.node,
       },
       parserOptions: {
-        projectService: {
-          allowDefaultProject: ['manifest.json'],
-        },
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -131,23 +125,5 @@ export default defineConfig(
   //     // 'n/no-process-exit': 'off',
   //   },
   // },
-  // Obsidian community-plugin submission rules. `files` currently matches
-  // zero files on disk; the globs light up when example plugins land under
-  // `examples/*/` and fixture plugins land under `test/fixtures/*/`.
-  // TODO: adjust globs once example plugin + fixture plugin paths settle.
-  {
-    files: ['examples/*/src/**/*.ts', 'test/fixtures/*/src/**/*.ts'],
-    plugins: { obsidianmd },
-    rules: { ...obsidianRecommendedRules },
-  },
-  // `hardcoded-config-path` substring-matches `.obsidian` and fires on docs
-  // URLs (`docs.obsidian.md/...`). That's a false positive in tests that
-  // assert against those URLs; the rule stays active on `src/` paths.
-  {
-    files: ['packages/*/test/**/*.ts'],
-    rules: {
-      'obsidianmd/hardcoded-config-path': 'off',
-    },
-  },
   globalIgnores(['node_modules', '**/dist', '**/coverage', '.husky', '.turbo']),
 );
