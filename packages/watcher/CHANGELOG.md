@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.2-beta.2](https://github.com/tbhb/obsidian-native-modules/compare/watcher-0.1.1-beta.2...watcher-0.1.2-beta.2) (2026-04-24)
+
+
+### Features
+
+* add Stryker mutation testing per package with 100% break threshold ([#12](https://github.com/tbhb/obsidian-native-modules/issues/12)) ([514fbc1](https://github.com/tbhb/obsidian-native-modules/commit/514fbc1964a86d93271b74b7ba5bd06bd7a06690))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @obsidian-native-modules/catalog bumped to 0.1.1-beta.3
+
 ## [0.1.1-beta.2](https://github.com/tbhb/obsidian-native-modules/compare/watcher-0.1.0-beta.2...watcher-0.1.1-beta.2) (2026-04-23)
 
 
