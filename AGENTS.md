@@ -16,10 +16,10 @@ pnpm build            # tsc -b per package via turbo, emits each package's dist/
 Run the full gate before pushing:
 
 ```bash
-pnpm lint:all && pnpm typecheck && pnpm build && pnpm test:coverage
+pnpm lint:all && pnpm typecheck && pnpm build && pnpm test:coverage && pnpm test:integration && pnpm test:property
 ```
 
-The pre-commit hook runs `nano-staged`. The pre-push hook runs the full gate: `lint:all`, `typecheck`, `build`, and `test:coverage`. Never bypass with `--no-verify`.
+The pre-commit hook runs `nano-staged`. The pre-push hook runs the full gate: `lint:all`, `typecheck`, `build`, `test:coverage`, `test:integration`, `test:property`, and `danger:local`. Coverage stays scoped to the `unit` project so fuzzed property cases and integration tests can't game the 100% threshold. `test:integration` and `test:property` run their tiers separately. Never bypass with `--no-verify`.
 
 ## Repository layout
 
@@ -46,8 +46,11 @@ Future packages: `node-pty/`, `better-sqlite3/`, and other upstream-wrapper pack
 ```bash
 pnpm dev              # turbo run dev (persistent)
 pnpm build            # turbo run build (tsc -b per package)
-pnpm test             # turbo run test
-pnpm test:coverage    # turbo run test:coverage
+pnpm test             # turbo run test (all projects per package)
+pnpm test:unit        # turbo run test:unit (deterministic unit tier per package)
+pnpm test:integration # turbo run test:integration (fixture-driven integration tier per package)
+pnpm test:property    # turbo run test:property (fast-check property tier per package)
+pnpm test:coverage    # turbo run test:coverage (unit project only, 100% gate)
 pnpm typecheck        # turbo run typecheck
 pnpm format           # biome format --write
 pnpm format:markdown  # rumdl fmt .
@@ -92,9 +95,13 @@ Every runtime dependency stays external so consuming bundlers can tree-shake.
 
 ## Testing
 
-- Vitest 4 with the `node` environment.
-- Coverage thresholds per package: 100% for the loader and future catalog; per-package shape-dependent elsewhere.
-- Each package runs tests independently via `turbo run test` or `pnpm --filter <pkg> test`.
+- Vitest 4. Projects run on `node` unless they drive plugin code, in which case they run on `jsdom` with a per-package `obsidian` mock aliased through `resolve.alias`.
+- Each package's `vitest.config.ts` declares three projects split by directory under `test/`. `unit` covers source modules with deterministic cases under `test/unit/**`. `integration` drives the package against real dependencies under `test/integration/**`. The loader integration tier copies a checked-in vault fixture to a tmpdir, installs the fixture plugin manifest, and runs assertions through a filesystem-backed `Vault` from `test/__mocks__/obsidian.ts`. `property` runs [fast-check][fast-check] properties over pure logic under `test/property/**` via [`@fast-check/vitest`][fast-check-vitest], which exposes `test.prop` and `it.prop` helpers. The default seed policy stays in place; fast-check prints the seed on failure, so reproducing a counterexample takes a single rerun with the printed seed.
+- Coverage thresholds per package: 100% for the loader and future catalog; per-package shape-dependent elsewhere. `pnpm test:coverage` scopes collection to the `unit` project so integration and property cases can't game the gate. Save integration suites under `test/integration/` and property suites under `test/property/` rather than `test/unit/` so coverage metrics stay tied to deterministic cases.
+- Each package runs tests independently via `turbo run test` or `pnpm --filter <pkg> test`. Per-package scripts mirror the root: `test:unit`, `test:integration`, `test:property`, `test:coverage`.
+
+[fast-check]: https://fast-check.dev/
+[fast-check-vitest]: https://github.com/dubzzz/fast-check/tree/main/packages/vitest
 
 ## Documentation linting
 
@@ -115,7 +122,7 @@ Add new technical terms to `cspell-words.txt` and `.vale/config/vocabularies/obs
 - husky hooks installed automatically by `pnpm install`:
   - `pre-commit` runs `nano-staged` across the staged files
   - `commit-msg` runs commitlint
-  - `pre-push` runs `pnpm lint:all && pnpm typecheck && pnpm build && pnpm test:coverage`
+  - `pre-push` runs `pnpm lint:all && pnpm typecheck && pnpm build && pnpm test:coverage && pnpm test:integration && pnpm test:property && pnpm danger:local`
 - Never use `--no-verify`. Fix the underlying failure.
 - Work on a feature branch, open a PR, and merge via squash.
 
