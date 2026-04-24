@@ -37,7 +37,7 @@ packages/
 └── dependabot.yml
 ```
 
-Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `.dependency-cruiser.cjs`, `.knip.json`, `cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `commitlint.config.js`.
+Root config: `package.json` (workspaces + hoisted dev deps), `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`, `tsconfig.json` (project references), `biome.json`, `eslint.config.mts`, `.dependency-cruiser.cjs`, `.jscpd.json`, `.knip.json`, `cspell.json` + `cspell-words.txt`, `.rumdl.toml`, `.vale.ini` + `.vale/`, `.yamllint.yaml` + `.yamllintignore`, `commitlint.config.js`.
 
 Future packages: `node-pty/`, `better-sqlite3/`, and other upstream-wrapper packages.
 
@@ -53,7 +53,8 @@ pnpm format           # biome format --write
 pnpm format:markdown  # rumdl fmt .
 pnpm lint             # biome lint + eslint
 pnpm lint:deps        # dependency-cruiser on packages/*/src and packages/*/test
-pnpm lint:knip        # knip - unused files, exports, deps
+pnpm lint:jscpd       # jscpd copy-paste detector on packages/*/src and packages/*/test
+pnpm lint:knip        # knip, unused files, exports, deps
 pnpm lint:markdown    # rumdl check
 pnpm lint:prose       # vale
 pnpm lint:spelling    # cspell
@@ -73,10 +74,12 @@ Filter to a specific package: `pnpm --filter @obsidian-native-modules/loader run
 - `eslint-plugin-sonarjs` contributes `sonarjs/cognitive-complexity` at the default threshold of 15. Prefer extracting helper functions over raising the threshold.
 - [dependency-cruiser][depcruise] guards each package's module graph via `.dependency-cruiser.cjs`. It forbids runtime circular dependencies, orphan modules, unresolvable imports, dev-dependency imports from any `packages/*/src/`, duplicate dependency-type declarations, and `packages/*/src/` depending on `packages/*/test/`. Cycles composed only of `import type` edges pass, since those edges vanish after tsc emits. The rule exempts `obsidian` from the dev-dep check so plugin sources under forthcoming `examples/` or `test/fixtures/` directories can import it once they land.
 - [Knip][knip] catches unused files, exports, and dependencies via `.knip.json`. It runs workspace-aware with one entry per package, so per-package project globs and ignore lists stay edit-in-place as packages diverge. External binaries called from npm scripts sit in `ignoreBinaries` so knip skips them; the list covers `actionlint`, `rumdl`, `vale`, and `yamllint`.
+- [jscpd][jscpd] detects copy-paste duplication across every package's `src/` and `test/` via `.jscpd.json`. The config sets `threshold: 0` so any clone fails the lint, honors `.gitignore`, and uses the default `mode: mild` with `minTokens: 50` and `minLines: 5`. Prefer extracting a shared helper into `@obsidian-native-modules/catalog` or an in-package helpers directory over silencing a clone. The on-demand `html` reporter writes to `./report/`, which `.gitignore` excludes.
 - Strict TypeScript with ES2022 target, `noUncheckedIndexedAccess`, and `isolatedModules`. Base options in `tsconfig.base.json`; each package extends it with `composite: true` and its own `rootDir` / `outDir`.
 - Avoid default exports.
 
 [depcruise]: https://github.com/sverweij/dependency-cruiser
+[jscpd]: https://github.com/kucherenko/jscpd
 [knip]: https://knip.dev/
 
 ## Build shape

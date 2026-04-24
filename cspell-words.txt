@@ -11,6 +11,7 @@ dependabot
 endgroup
 gitignored
 husky
+jscpd
 jsdom
 knip
 libnpmpublish

@@ -26,6 +26,7 @@ gitignore[dr]?
 gzip
 gzipped
 [Hh]usky
+jscpd
 [Kk]nip
 match(?:er|ers|ing)
 MIT
