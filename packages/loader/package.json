@@ -1,6 +1,6 @@
 {
   "name": "@obsidian-native-modules/loader",
-  "version": "0.1.1-beta.2",
+  "version": "0.1.2-beta.2",
   "description": "Runtime native-module resolver for Obsidian plugins. Delegates fetch and verification to obsidian-plugin-assets.",
   "keywords": [
     "obsidian",
