@@ -7,7 +7,7 @@
  * against the package's `PackageSpec`. Consumed by CI matrix jobs and
  * maintainers via a CLI.
  *
- * The real implementation lands incrementally.
+ * The real code lands incrementally.
  */
 
 export const VERSION = '0.0.0';

@@ -6,7 +6,7 @@
  * matrix. Runs on a daily schedule in CI and exposes a CLI for ad-hoc
  * maintainer checks.
  *
- * The real implementation lands incrementally.
+ * The real code lands incrementally.
  */
 
 export const VERSION = '0.0.0';

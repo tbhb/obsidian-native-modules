@@ -7,7 +7,7 @@
  * helpers. Ships in plugin bundles (via loader) and in build-time
  * packages.
  *
- * The real implementation lands incrementally.
+ * The real code lands incrementally.
  */
 
 export const VERSION = '0.0.0';
