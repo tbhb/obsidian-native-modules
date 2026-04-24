@@ -7,7 +7,15 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!node_modules", "!dist", "!coverage", "!pnpm-lock.yaml"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!dist",
+      "!coverage",
+      "!**/reports",
+      "!**/.stryker-tmp",
+      "!pnpm-lock.yaml"
+    ]
   },
   "formatter": {
     "enabled": true,

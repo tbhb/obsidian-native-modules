@@ -36,6 +36,7 @@ shellcheck
 sigstore
 sonarjs
 SLSA
+stryker
 tbhb
 tmpdir
 topo

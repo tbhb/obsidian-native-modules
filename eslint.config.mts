@@ -83,7 +83,12 @@ export default defineConfig(
   // Root-level config files run in Node, not the browser. All four sit in
   // the root tsconfig's `include`.
   {
-    files: ['.commitlintrc.ts', 'packages/*/vite.config.ts', 'packages/*/vitest.config.ts'],
+    files: [
+      '.commitlintrc.ts',
+      'packages/*/vite.config.ts',
+      'packages/*/vitest.config.ts',
+      'packages/*/vitest.stryker.config.ts',
+    ],
     languageOptions: {
       parser: tseslint.parser,
       globals: {
@@ -125,5 +130,13 @@ export default defineConfig(
   //     // 'n/no-process-exit': 'off',
   //   },
   // },
-  globalIgnores(['node_modules', '**/dist', '**/coverage', '.husky', '.turbo']),
+  globalIgnores([
+    'node_modules',
+    '**/dist',
+    '**/coverage',
+    '**/reports',
+    '**/.stryker-tmp',
+    '.husky',
+    '.turbo',
+  ]),
 );
