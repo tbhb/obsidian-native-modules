@@ -134,7 +134,7 @@ release-please runs in monorepo mode on a single branch (`main`). See [`RELEASIN
 
 - Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. File paths under `packages/<name>/**` determine which package gets bumped.
 - `chore:`, `docs:`, `refactor:`, `style:`, `test:`, `ci:`, and `build:` commits don't open release PRs.
-- To cut a beta release, add a `Release-As: x.y.z-beta.N` footer to a qualifying commit. The version string drives both the GitHub `prerelease: true` flag and the npm `--tag beta` dist-tag in the publish workflow.
+- To cut a beta release, add a `Release-As: x.y.z-beta.N` footer to a qualifying commit. release-please's `prerelease` config option, once enabled, stays on for every release regardless of the version qualifier, so the `release.yml` workflow flips the GitHub prerelease flag itself. It edits the matching `<component>-<version>` release to `prerelease=true` when the version carries a semver qualifier and leaves stable tags unflagged. The same version string drives the npm `--tag beta` dist-tag in the publish workflow.
 - Don't hand-edit `packages/*/package.json` `version`, `packages/*/CHANGELOG.md`, `.github/release-please-manifest.json`. Don't create tags manually.
 
 ## Rules at a glance

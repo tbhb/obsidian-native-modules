@@ -17,7 +17,7 @@ Only `feat:`, `fix:`, and commits with breaking changes trigger a release PR. `c
 Version string alone determines the channel:
 
 - **Stable release.** Normal `feat` or `fix` bumps under `bump-minor-pre-major: true` and `bump-patch-for-minor-pre-major: true`. Published to npm under the default `latest` dist-tag. The GitHub release stays unmarked.
-- **Beta release.** Version carries a prerelease qualifier such as `0.1.0-beta.2`. Trigger via a `Release-As: 0.1.0-beta.2` footer on any qualifying commit that touches at least one `packages/<name>/**` path. Each package config sets `"prerelease": true`, so release-please flags the GitHub release as `prerelease: true` whenever the version carries a prerelease qualifier. Stable versions stay unflagged. The publish job detects the `-` in the version string and passes `--tag beta` to `npm publish`, so `npm install` keeps resolving to the highest stable version.
+- **Beta release.** Version carries a prerelease qualifier such as `0.1.0-beta.2`. Trigger via a `Release-As: 0.1.0-beta.2` footer on any qualifying commit that touches at least one `packages/<name>/**` path. release-please's `prerelease` config option, once enabled, stays on for every release regardless of the version qualifier, so `release.yml` flips the GitHub prerelease flag itself. It edits each released `<component>-<version>` tag to `prerelease=true` when the version carries a qualifier and leaves stable tags unflagged. The publish job also detects the `-` in the version string and passes `--tag beta` to `npm publish`, so `npm install` keeps resolving to the highest stable version.
 
 BRAT honors GitHub's `prerelease` flag for beta-testers, which covers the user-visible staging channel without a separate branch.
 

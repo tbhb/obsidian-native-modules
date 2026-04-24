@@ -137,3 +137,27 @@ jobs:
             )
             echo "::endgroup::"
           done
+
+      # release-please does not vary the GitHub prerelease flag based on the
+      # semver qualifier — its `prerelease` config is a static always-on
+      # boolean. Detect the qualifier from each released package's version
+      # and flip the flag on the matching tag so `loader-0.1.0-beta.1` is
+      # prerelease, `loader-0.1.0` is not. Stable releases need no edit
+      # since GitHub defaults new releases to prerelease=false. Tag shape
+      # comes from the release-please config: `include-component-in-tag:
+      # true` and `include-v-in-tag: false` produces `<component>-<version>`.
+      - name: Mark prereleases for tags with a semver qualifier
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PATHS_RELEASED: ${{ needs.release-please.outputs.paths_released }}
+        run: |
+          set -euo pipefail
+          echo "$PATHS_RELEASED" | jq -r '.[]' | while read -r pkg_dir; do
+            version=$(jq -r '.version' "$pkg_dir/package.json")
+            if [[ "$version" != *-* ]]; then
+              continue
+            fi
+            component=$(basename "$pkg_dir")
+            tag="${component}-${version}"
+            gh release edit "$tag" --prerelease=true
+          done
